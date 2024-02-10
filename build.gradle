@@ -1,0 +1,111 @@
+plugins {
+    id 'groovy'
+    id 'java'
+    id("io.freefair.lombok") version "8.0.1"
+    id "io.qameta.allure" version "2.11.2"
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+
+compileJava.options.encoding = 'UTF-8'
+//tasks.withType(JavaCompile) {
+//    /*это убрать, чтобы русс были норм в терминале,
+//    но тогда в аллюре не будет русс  */
+//     options.encoding = 'UTF-8'
+//
+//}
+compileJava {
+//    options.encoding = 'UTF-8'
+}
+compileTestJava {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Test) {
+    systemProperty "file.encoding", "UTF-8"
+}
+
+dependencies {
+    implementation 'org.codehaus.groovy:groovy-all:3.0.5'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    /* https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params */
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.8.1'
+/* https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind */
+    /*доступна в тестовом режиме пиши: testimplementation
+    если не только в тестовом, то implementation        */
+    testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.16.1'
+/* https://mvnrepository.com/artifact/org.aeonbits.owner/owner
+библиотека позволяет скачивать настройки сразу из нескольких файлов
+ */
+    testImplementation group: 'org.aeonbits.owner', name: 'owner', version: '1.0.12'
+    /* для работы с файлами  */
+    testImplementation 'org.apache.commons:commons-io:1.3.2'
+    /* https://mvnrepository.com/artifact/org.testng/testng
+    для Java 8 , для новее можно и бОльшую версию
+    это тестовый движёк, как и JUnit  */
+    testImplementation group: 'org.testng', name: 'testng', version: '6.14.3'
+    implementation 'io.rest-assured:rest-assured:4.4.0'
+    testImplementation 'io.qameta.allure:allure-rest-assured:2.12.1'
+    testImplementation 'com.github.javafaker:javafaker:1.0.2'
+    testImplementation 'org.assertj:assertj-core:3.25.3'
+// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.17.0'
+
+}
+/* Запуск тестов для TestNG через xml файл, который лежит в корне проекта
+./gradlew clean testNGRun -x test -Dsuite="testng.xml"
+  в командной строке можно писать
+./gradlew clean testNGRun -x test -Dsuit="testNG.xml"
+* */
+tasks.register("testNGRun", Test.class) {
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    useTestNG()
+    String suiteName = System.getProperty("suite")
+    if (suiteName != null) {
+        useTestNG {
+            suites suiteName
+        }
+    }
+}
+
+
+test {
+    useJUnitPlatform()
+    systemProperty "file.encoding", "utf-8"
+
+    /*  фильтры для вывода информации на консоль при прохождении тестов, какие события мониторить  */
+    testLogging {
+/*        systemProperty "file.encoding", "utf-8"  */
+        events "passed", "skipped", "failed"
+    }
+}
+/* в тасках можно писать задачи, которые нужно выполнить ч/з градл  */
+/*  для запуска тестов по тэгам, регистрируем задачу для класса
+  запуск тестов происходит через эту команду для Junit5
+ ./gradlew clean myTags -x test -DcustomTags="UI,API"  */
+tasks.register("myTags", Test.class) {
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    useJUnitPlatform()
+    systemProperty "file.encoding", "utf-8"
+    String fullTags = System.getProperty("customTags")
+    if (fullTags != null) {
+        String[] tags = fullTags.split(",")
+        useJUnitPlatform {
+            for (String tag : tags) {
+                includeTags.add(tag)
+            }
+        }
+
+    }
+}

@@ -1,0 +1,24 @@
+<!-- этот файл для запуска тестов TestNG
+ таких файлов в проекте м.б. несколько -->
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="MyCalcTest">
+    <listeners>
+        <listener class-name="listener.RetryTransformerTestNG"/>
+    </listeners>
+    <test name="UnitTests" parallel="methods" thread-count="3">
+        <!--можно указать группы тестов включая которые или исключая которые запускать
+        для исключения или включения у теста указать группу? например:   @Test(groups = {"sum1"})
+        для слушателя RetryListenerTestNG нужно его указать, в обёртке понятной TestNG : RetryTransformerTestNG
+        -->
+        <groups>
+            <run>
+                <include name="sum1"/>
+                <exclude name="sum2"/>
+            </run>
+        </groups>
+
+        <classes>
+            <class name="tests.testng.NGTestsAll"/>
+        </classes>
+    </test>
+</suite>
