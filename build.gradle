@@ -57,6 +57,23 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.25.3'
 // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
     testImplementation 'org.seleniumhq.selenium:selenium-java:4.17.0'
+    /* если есть селенид, можно не ставить селениум-он внутри селенида уже есть */
+    testImplementation 'com.codeborne:selenide:7.0.6'
+
+/*  чтобы не скачивать нужный webDriver,  ставим эту библиотеку */
+    testImplementation 'io.github.bonigarcia:webdrivermanager:5.6.3'
+    /* читалка pdf  */
+    testImplementation 'com.codeborne:pdf-test:1.8.1'
+/*Log4j - библиотека позволяет осуществить логирование процессов в приложении
+         В курсе job4j используется первая версия. Это связано с другой библиотекой slf4j.
+           Log4j имеет версию 2, но slf4j нет. Поэтому, чтобы не потерять совместимость пока используем первую версию log4j */
+    implementation 'log4j:log4j:1.2.17'
+    /*В Java есть несколько библиотек для логгирования: Logback, log4j, System.out.println.
+        Библиотека slf4j позволяет абстрагироваться от конкретных библиотек.
+        Это позволяет придерживаться единого стиля логгирования для проектов. */
+    /* testRuntimeOnly not testImplementation 'org.slf4j:slf4j-log4j12:1.7.30'  */
+    testRuntimeOnly 'org.slf4j:slf4j-log4j12:2.0.9'
+
 
 }
 /* Запуск тестов для TestNG через xml файл, который лежит в корне проекта

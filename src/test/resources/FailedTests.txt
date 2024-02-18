@@ -1,1 +1,1 @@
---tests tests.junit5.SimpleTests.dummy* --tests tests.junit5.SimpleTests.dummy2*
+--tests tests.junit5.SimpleTests.dummy2* --tests tests.junit5.SimpleTests.dummy*
